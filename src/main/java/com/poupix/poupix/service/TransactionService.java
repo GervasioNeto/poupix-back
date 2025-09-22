@@ -2,7 +2,9 @@ package com.poupix.poupix.service;
 
 import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Transaction;
+import com.poupix.poupix.entity.User;
 import com.poupix.poupix.repository.TransactionRepository;
+import com.poupix.poupix.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final UserRepository userRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository, UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
+        this.userRepository = userRepository;
     }
 
     public List<TransactionDTO> getAllTransactions() {
@@ -31,6 +35,17 @@ public class TransactionService {
     }
 
     public TransactionDTO createTransaction(Transaction transaction) {
+        Transaction saved = transactionRepository.save(transaction);
+        return toDTO(saved);
+    }
+
+    public TransactionDTO createTransaction(Long userId, Transaction transaction) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        transaction.setUser(user);
+        user.addTransaction(transaction); // opcional, se você tiver addTransaction no User
+
         Transaction saved = transactionRepository.save(transaction);
         return toDTO(saved);
     }

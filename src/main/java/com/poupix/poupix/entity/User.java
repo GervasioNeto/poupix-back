@@ -3,6 +3,8 @@ package com.poupix.poupix.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,8 +24,27 @@ public class User {
 
 
     // Relacionamento 1:N com transações (opcional por enquanto)
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Transaction> transactions;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    // Opcional: métodos auxiliares para adicionar ou remover transações
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+        transaction.setUser(this);
+    }
+
+    public void removeTransaction(Transaction transaction) {
+        transactions.remove(transaction);
+        transaction.setUser(null);
+    }
 
     // Getters e Setters
     public Long getId() { return id; }

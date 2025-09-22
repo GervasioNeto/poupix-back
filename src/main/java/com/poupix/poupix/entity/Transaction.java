@@ -26,6 +26,18 @@ public class Transaction {
         this.createdAt = LocalDateTime.now();
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // Getters e setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

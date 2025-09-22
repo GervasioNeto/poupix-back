@@ -36,6 +36,12 @@ public class TransactionController {
         return transactionService.createTransaction(transaction);
     }
 
+    @PostMapping
+    public TransactionDTO createTransaction(@RequestParam Long userId, @RequestBody Transaction transaction) {
+        return transactionService.createTransaction(userId, transaction);
+    }
+
+
     @PutMapping("/{id}")
     public TransactionDTO updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         return transactionService.updateTransaction(id, transaction);

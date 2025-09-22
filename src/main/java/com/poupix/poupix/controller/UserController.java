@@ -1,5 +1,6 @@
 package com.poupix.poupix.controller;
 
+import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.User;
 import com.poupix.poupix.service.UserService;
@@ -45,5 +46,10 @@ public class UserController {
     private ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/transactions")
+    public List<TransactionDTO> getTransactionsByUser(@PathVariable Long id) {
+        return userService.getTransactionsByUserId(id);
     }
 }
