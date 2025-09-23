@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 public class TransactionDTO {
     private Long id;
-    private Long userId;
     private Double amount;
     private String type;
     private String category;
@@ -13,9 +12,8 @@ public class TransactionDTO {
     private LocalDate date;
     private LocalDateTime createdAt;
 
-    public TransactionDTO(Long id, Long userId, Double amount, String type, String category, String description, LocalDate date, LocalDateTime createdAt) {
+    public TransactionDTO(Long id, Double amount, String type, String category, String description, LocalDate date, LocalDateTime createdAt) {
         this.id = id;
-        this.userId = userId;
         this.amount = amount;
         this.type = type;
         this.category = category;
@@ -26,7 +24,6 @@ public class TransactionDTO {
 
     // Getters e setters
     public Long getId() { return id; }
-    public Long getUserId() { return userId; }
     public Double getAmount() { return amount; }
     public String getType() { return type; }
     public String getCategory() { return category; }

@@ -62,7 +62,7 @@ public class TransactionService {
                     transaction.setCategory(updatedTransaction.getCategory());
                     transaction.setDescription(updatedTransaction.getDescription());
                     transaction.setDate(updatedTransaction.getDate());
-                    transaction.setUserId(updatedTransaction.getUserId());
+//                    transaction.setUserId(updatedTransaction.getUserId());
 
                     Transaction saved = transactionRepository.save(transaction);
                     return toDTO(saved);
@@ -73,7 +73,6 @@ public class TransactionService {
     private TransactionDTO toDTO(Transaction transaction) {
         return new TransactionDTO(
                 transaction.getId(),
-                transaction.getUserId(),
                 transaction.getAmount(),
                 transaction.getType(),
                 transaction.getCategory(),

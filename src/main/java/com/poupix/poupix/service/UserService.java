@@ -62,7 +62,6 @@ public class UserService {
     private TransactionDTO toDTOTransaction(Transaction transaction) {
         return new TransactionDTO(
                 transaction.getId(),
-                transaction.getUser().getId(),
                 transaction.getAmount(),
                 transaction.getType(),
                 transaction.getCategory(),

@@ -31,16 +31,11 @@ public class TransactionController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
-    public TransactionDTO createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction);
-    }
-
-    @PostMapping
-    public TransactionDTO createTransaction(@RequestParam Long userId, @RequestBody Transaction transaction) {
-        return transactionService.createTransaction(userId, transaction);
-    }
-
+    // BUGADOOOOOOOOOOOOO
+//    @PostMapping
+//    public TransactionDTO createTransaction(@RequestBody Transaction transaction) {
+//        return transactionService.createTransaction(transaction);
+//    }
 
     @PutMapping("/{id}")
     public TransactionDTO updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {

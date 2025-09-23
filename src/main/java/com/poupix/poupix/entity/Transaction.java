@@ -12,7 +12,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId; // referencia o usuário
     private Double amount;
     private String type; // income ou expense
     private String category;
@@ -27,7 +26,7 @@ public class Transaction {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id") // mapeia FK para User
     private User user;
 
     public User getUser() {
@@ -41,9 +40,6 @@ public class Transaction {
     // Getters e setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
 
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }
