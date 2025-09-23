@@ -12,7 +12,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId; // referencia o usuário
+//    private Long userId; // referencia o usuário
     private Double amount;
     private String type; // income ou expense
     private String category;
@@ -20,6 +20,10 @@ public class Transaction {
     private LocalDate date;
 
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @PrePersist
     protected void onCreate() {
@@ -30,8 +34,8 @@ public class Transaction {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+//    public Long getUserId() { return userId; }
+//    public void setUserId(Long userId) { this.userId = userId; }
 
     public Double getAmount() { return amount; }
     public void setAmount(Double amount) { this.amount = amount; }

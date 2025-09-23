@@ -18,28 +18,24 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    public List<TransactionDTO> getAllTransactions() {
-        return transactionRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 
-    public Optional<TransactionDTO> getTransactionById(Long id) {
-        return transactionRepository.findById(id)
-                .map(this::toDTO);
+    public Optional<Transaction> getTransactionById(Long id) {
+        return transactionRepository.findById(id);
     }
 
-    public TransactionDTO createTransaction(Transaction transaction) {
+    public Transaction createTransaction(Transaction transaction) {
         Transaction saved = transactionRepository.save(transaction);
-        return toDTO(saved);
+        return transactionRepository.save(transaction);
     }
 
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
     }
 
-    public TransactionDTO updateTransaction(Long id, Transaction updatedTransaction) {
+    public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
         return transactionRepository.findById(id)
                 .map(transaction -> {
                     transaction.setAmount(updatedTransaction.getAmount());
@@ -47,24 +43,22 @@ public class TransactionService {
                     transaction.setCategory(updatedTransaction.getCategory());
                     transaction.setDescription(updatedTransaction.getDescription());
                     transaction.setDate(updatedTransaction.getDate());
-                    transaction.setUserId(updatedTransaction.getUserId());
 
                     Transaction saved = transactionRepository.save(transaction);
-                    return toDTO(saved);
+                    return transactionRepository.save(transaction);
                 })
                 .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
     }
 
-    private TransactionDTO toDTO(Transaction transaction) {
-        return new TransactionDTO(
-                transaction.getId(),
-                transaction.getUserId(),
-                transaction.getAmount(),
-                transaction.getType(),
-                transaction.getCategory(),
-                transaction.getDescription(),
-                transaction.getDate(),
-                transaction.getCreatedAt()
-        );
-    }
+//    private TransactionDTO toDTO(Transaction transaction) {
+//        return new TransactionDTO(
+//                transaction.getId(),
+//                transaction.getAmount(),
+//                transaction.getType(),
+//                transaction.getCategory(),
+//                transaction.getDescription(),
+//                transaction.getDate(),
+//                transaction.getCreatedAt()
+//        );
+//    }
 }

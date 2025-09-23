@@ -3,6 +3,8 @@ package com.poupix.poupix.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +21,9 @@ public class User {
     private String password;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
 
 
     // Relacionamento 1:N com transações (opcional por enquanto)

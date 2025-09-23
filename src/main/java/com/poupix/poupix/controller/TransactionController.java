@@ -20,24 +20,24 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<TransactionDTO> getAllTransactions() {
+    public List<Transaction> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
+    public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id) {
         return transactionService.getTransactionById(id)
                 .map(transaction -> new ResponseEntity<>(transaction, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public TransactionDTO createTransaction(@RequestBody Transaction transaction) {
+    public Transaction createTransaction(@RequestBody Transaction transaction) {
         return transactionService.createTransaction(transaction);
     }
 
     @PutMapping("/{id}")
-    public TransactionDTO updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
+    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
         return transactionService.updateTransaction(id, transaction);
     }
 
