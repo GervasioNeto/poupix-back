@@ -48,7 +48,7 @@ public class UserService {
 
     //Mapper
     private UserDTO toDTO(User user){
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getTransactions());
     }
 
 //    public UserService(UserRepository userRepository) {

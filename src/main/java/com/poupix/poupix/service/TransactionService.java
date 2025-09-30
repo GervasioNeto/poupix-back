@@ -1,22 +1,28 @@
 package com.poupix.poupix.service;
 
-import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Transaction;
+import com.poupix.poupix.entity.User;
 import com.poupix.poupix.repository.TransactionRepository;
+import com.poupix.poupix.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
 
-    private final TransactionRepository transactionRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
+
+//    public TransactionService(TransactionRepository transactionRepository) {
+//        this.transactionRepository = transactionRepository;
+//    }
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
@@ -26,13 +32,39 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
-    public Transaction createTransaction(Transaction transaction) {
-        Transaction saved = transactionRepository.save(transaction);
+    public Transaction saveTransaction(Long id, Transaction transaction) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        transaction.setUser(user);
+
+//        Transaction saved = transactionRepository.save(transaction);
+
         return transactionRepository.save(transaction);
     }
 
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Transaction updateTransactionByUserId(Long userId, Transaction newTransaction) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Transaction atualTransaction = transactionRepository.findUserById(userId)
+                .orElseThrow(() -> new RuntimeException("Trasaction not found for userId :" + userId));
+
+        atualTransaction.setAmount(newTransaction.getAmount());
+        atualTransaction.setType(newTransaction.getType());
+        atualTransaction.setCategory(newTransaction.getCategory());
+        atualTransaction.setDescription(newTransaction.getDescription());
+        atualTransaction.setDate(newTransaction.getDate());
+        atualTransaction.setCreatedAt(newTransaction.getCreatedAt());
+
+        atualTransaction.setUser(user);
+
+        return transactionRepository.save(atualTransaction);
     }
 
     public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
@@ -49,16 +81,4 @@ public class TransactionService {
                 })
                 .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
     }
-
-//    private TransactionDTO toDTO(Transaction transaction) {
-//        return new TransactionDTO(
-//                transaction.getId(),
-//                transaction.getAmount(),
-//                transaction.getType(),
-//                transaction.getCategory(),
-//                transaction.getDescription(),
-//                transaction.getDate(),
-//                transaction.getCreatedAt()
-//        );
-//    }
 }

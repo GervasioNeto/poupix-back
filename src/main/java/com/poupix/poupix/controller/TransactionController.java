@@ -1,8 +1,8 @@
 package com.poupix.poupix.controller;
 
-import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.service.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +13,12 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
-    private final TransactionService transactionService;
+    @Autowired
+    private TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
+//    public TransactionController(TransactionService transactionService) {
+//        this.transactionService = transactionService;
+//    }
 
     @GetMapping
     public List<Transaction> getAllTransactions() {
@@ -31,15 +32,21 @@ public class TransactionController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction);
+    @PostMapping("/{id}")
+    public Transaction saveTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
+        return transactionService.saveTransaction(id, transaction);
     }
 
     @PutMapping("/{id}")
-    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        return transactionService.updateTransaction(id, transaction);
+    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction newTransaction) {
+        Transaction transaction = transactionService.updateTransactionByUserId(id, newTransaction);
+        return ResponseEntity.ok(transaction).getBody();
     }
+
+//    @PutMapping("/{id}")
+//    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
+//        return transactionService.updateTransaction(id, transaction);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
