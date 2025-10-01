@@ -1,8 +1,7 @@
 package com.poupix.poupix.dto;
 
 
-import com.poupix.poupix.entity.Transaction;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDTO {
@@ -10,16 +9,22 @@ public class UserDTO {
     private Long id;
     private String name;
     private String email;
-
-    private List<Transaction> transactions;
+    private List<GroupDTO> groups;
 
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email, List<Transaction> transactions) {
+    public UserDTO(Long id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.transactions = transactions;
+        this.groups = new ArrayList<>();
+    }
+
+    public UserDTO(Long id, String name, String email, List<GroupDTO> groups) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.groups = groups;
     }
 
     // Getters e Setters
@@ -32,6 +37,11 @@ public class UserDTO {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public List<Transaction> getTransactions() { return transactions; }
-    public void setTransactions(List<Transaction> transactions) { this.transactions = transactions; }
+    public List<GroupDTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<GroupDTO> groups) {
+        this.groups = groups;
+    }
 }

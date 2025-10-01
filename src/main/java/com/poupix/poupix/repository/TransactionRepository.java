@@ -12,4 +12,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserId(Long userId);
 
     Optional<Transaction> findUserById(Long userId);
+
+    List<Transaction> findAllByUserId(Long userId);
+
+    List<Transaction> findByGroupId(Long groupId);
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -22,8 +23,23 @@ public class User {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Transaction> transactions = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private List<Transaction> transactions = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "users")
+    private List<Group> groups = new ArrayList<>();
+
+    public User() {
+    }
+
+    public User(Long id, String name, String email, String password, LocalDateTime createdAt, List<Transaction> transactions, List<Group> groups) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.createdAt = createdAt;
+        this.groups = groups;
+    }
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -41,11 +57,12 @@ public class User {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 }

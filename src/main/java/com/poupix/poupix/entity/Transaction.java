@@ -27,6 +27,12 @@ public class Transaction {
     @JsonIgnore
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    @JsonIgnore
+    private Group group;
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -64,5 +70,13 @@ public class Transaction {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

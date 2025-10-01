@@ -1,5 +1,6 @@
 package com.poupix.poupix.controller;
 
+import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/api/users/{userId}/transactions")
 public class TransactionController {
 
     @Autowired
@@ -20,10 +21,10 @@ public class TransactionController {
 //        this.transactionService = transactionService;
 //    }
 
-    @GetMapping
-    public List<Transaction> getAllTransactions() {
-        return transactionService.getAllTransactions();
-    }
+//    @GetMapping
+//    public List<Transaction> getAllTransactions() {
+//        return transactionService.getAllTransactions();
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id) {
@@ -32,10 +33,13 @@ public class TransactionController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/{id}")
-    public Transaction saveTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        return transactionService.saveTransaction(id, transaction);
-    }
+//    @PostMapping("/group/{groupId}")
+//    public Transaction saveTransaction(
+//            @PathVariable Long userId,
+//            @PathVariable Long groupId,
+//            @RequestBody Transaction transaction) {
+//        return transactionService.saveTransaction(userId, groupId, transaction);
+//    }
 
     @PutMapping("/{id}")
     public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction newTransaction) {
@@ -52,5 +56,21 @@ public class TransactionController {
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public List<TransactionDTO> getUserTransactions(@PathVariable Long userId) {
+        return transactionService.getByUserId(userId)
+                .stream()
+                .map(transactionService::toDTO)
+                .toList();
+    }
+
+    @PostMapping("/groups/{groupId}")
+    public TransactionDTO createTransaction(
+            @PathVariable Long userId,
+            @PathVariable Long groupId,
+            @RequestBody Transaction transaction) {
+        return transactionService.toDTO(transactionService.saveTransaction(userId, groupId, transaction));
     }
 }

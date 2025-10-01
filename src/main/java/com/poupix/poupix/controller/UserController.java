@@ -20,13 +20,16 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
+        User savedUser = userService.createUser(user);
+        return ResponseEntity.ok(userService.toDTO(savedUser)); // retorna DTO sem senha
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers().stream()
+                .map(userService::toDTO) // converte User -> UserDTO
+                .toList();
     }
 
     @PutMapping("/{id}")

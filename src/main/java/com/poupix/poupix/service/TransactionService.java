@@ -1,7 +1,10 @@
 package com.poupix.poupix.service;
 
+import com.poupix.poupix.dto.TransactionDTO;
+import com.poupix.poupix.entity.Group;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.TransactionRepository;
 import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class TransactionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
 //    public TransactionService(TransactionRepository transactionRepository) {
 //        this.transactionRepository = transactionRepository;
 //    }
@@ -32,13 +38,15 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
-    public Transaction saveTransaction(Long id, Transaction transaction) {
-        User user = userRepository.findById(id)
+    public Transaction saveTransaction(Long userId, Long groupId, Transaction transaction) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        transaction.setUser(user);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
 
-//        Transaction saved = transactionRepository.save(transaction);
+        transaction.setUser(user);
+        transaction.setGroup(group);
 
         return transactionRepository.save(transaction);
     }
@@ -80,5 +88,23 @@ public class TransactionService {
                     return transactionRepository.save(transaction);
                 })
                 .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
+    }
+
+    public List<Transaction> getByUserId(Long userId) {
+        return transactionRepository.findAllByUserId(userId);
+    }
+
+    public TransactionDTO toDTO(Transaction transaction) {
+        TransactionDTO dto = new TransactionDTO();
+        dto.setId(transaction.getId());
+        dto.setUserId(transaction.getUser() != null ? transaction.getUser().getId() : null);
+        dto.setGroupId(transaction.getGroup() != null ? transaction.getGroup().getId() : null);
+        dto.setAmount(transaction.getAmount());
+        dto.setType(transaction.getType());
+        dto.setCategory(transaction.getCategory());
+        dto.setDescription(transaction.getDescription());
+        dto.setDate(transaction.getDate());
+        dto.setCreatedAt(transaction.getCreatedAt());
+        return dto;
     }
 }
