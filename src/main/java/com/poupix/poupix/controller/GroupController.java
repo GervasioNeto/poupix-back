@@ -4,6 +4,7 @@ import com.poupix.poupix.dto.GroupDTO;
 import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.Group;
+import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.service.GroupService;
 import com.poupix.poupix.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +29,25 @@ public class GroupController {
         return groupService.toDTO(savedGroup);
     }
 
-    @GetMapping
-    public List<GroupDTO> getAllGroups() {
-        return groupService.getAllGroups().stream()
-                .map(groupService::toDTO)
-                .toList();
-    }
+//    @PostMapping("/{groupId}/transactions")
+//    public TransactionDTO createTransaction(@PathVariable Long groupId, @RequestBody TransactionDTO transactionDTO) {
+//        var transaction = transactionService.createTransaction(groupId, transactionDTO);
+//        return transactionService.toDTO(transaction);
+//    }
 
     @PostMapping("/{groupId}/users/{userId}")
     public GroupDTO addUserToGroup(@PathVariable Long groupId, @PathVariable Long userId) {
         Group updatedGroup = groupService.addUserToGroup(groupId, userId);
         return groupService.toDTO(updatedGroup);
+    }
+
+    @PostMapping("/{groupId}/transactions")
+    public ResponseEntity<TransactionDTO> createTransaction(
+            @PathVariable Long groupId,
+            @RequestBody TransactionDTO transactionDTO) {
+
+        Transaction transaction = transactionService.createTransaction(transactionDTO, groupId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.toDTO(transaction));
     }
 
     // Lista usuários de um grupo
@@ -47,6 +56,13 @@ public class GroupController {
         return groupService.getGroupUsers(groupId)
                 .stream()
                 .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
+                .toList();
+    }
+
+    @GetMapping
+    public List<GroupDTO> getAllGroups() {
+        return groupService.getAllGroups().stream()
+                .map(groupService::toDTO)
                 .toList();
     }
 

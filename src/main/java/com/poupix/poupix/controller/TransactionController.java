@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users/{userId}/transactions")
+@RequestMapping("/api/transactions")
 public class TransactionController {
 
     @Autowired
@@ -41,10 +41,16 @@ public class TransactionController {
 //        return transactionService.saveTransaction(userId, groupId, transaction);
 //    }
 
+//    @PutMapping("/{id}")
+//    public Transaction updateTransactionByUserId(@PathVariable Long id, @RequestBody Transaction newTransaction) {
+//        Transaction transaction = transactionService.updateTransactionByUserId(id, newTransaction);
+//        return ResponseEntity.ok(transaction).getBody();
+//    }
+
     @PutMapping("/{id}")
-    public Transaction updateTransaction(@PathVariable Long id, @RequestBody Transaction newTransaction) {
-        Transaction transaction = transactionService.updateTransactionByUserId(id, newTransaction);
-        return ResponseEntity.ok(transaction).getBody();
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction newTransaction) {
+        Transaction updated = transactionService.updateTransaction(id, newTransaction);
+        return ResponseEntity.ok(updated);
     }
 
 //    @PutMapping("/{id}")

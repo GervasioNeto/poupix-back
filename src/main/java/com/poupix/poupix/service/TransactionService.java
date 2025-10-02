@@ -51,6 +51,53 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+//    public Transaction createTransaction(Long groupId, Long userId, TransactionDTO dto) {
+//        Group group = groupRepository.findById(groupId)
+//                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+//
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+//
+//        Transaction transaction = new Transaction();
+//        transaction.setDescription(dto.getDescription());
+//        transaction.setAmount(dto.getAmount());
+//        transaction.setGroup(group);
+//        transaction.setUser(user);
+//
+//        return transactionRepository.save(transaction);
+//    }
+
+    public Transaction createTransaction(TransactionDTO dto, Long groupId) {
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(dto.getAmount());
+        transaction.setType(dto.getType());
+        transaction.setCategory(dto.getCategory());
+        transaction.setDescription(dto.getDescription());
+        transaction.setDate(dto.getDate());
+        transaction.setUser(user);
+        transaction.setGroup(group);
+
+        return transactionRepository.save(transaction);
+    }
+
+    public Transaction createTransaction(Long groupId, TransactionDTO dto) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+
+        Transaction transaction = new Transaction();
+        transaction.setDescription(dto.getDescription());
+        transaction.setAmount(dto.getAmount());
+        transaction.setGroup(group);
+
+        return transactionRepository.save(transaction);
+    }
+
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
     }
@@ -75,20 +122,44 @@ public class TransactionService {
         return transactionRepository.save(atualTransaction);
     }
 
-    public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
-        return transactionRepository.findById(id)
-                .map(transaction -> {
-                    transaction.setAmount(updatedTransaction.getAmount());
-                    transaction.setType(updatedTransaction.getType());
-                    transaction.setCategory(updatedTransaction.getCategory());
-                    transaction.setDescription(updatedTransaction.getDescription());
-                    transaction.setDate(updatedTransaction.getDate());
+    @Transactional
+    public Transaction updateTransaction(Long transactionId, Transaction newTransaction) {
+        Transaction atualTransaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found with id: " + transactionId));
 
-                    Transaction saved = transactionRepository.save(transaction);
-                    return transactionRepository.save(transaction);
-                })
-                .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
+        // Atualiza campos
+        atualTransaction.setAmount(newTransaction.getAmount());
+        atualTransaction.setType(newTransaction.getType());
+        atualTransaction.setCategory(newTransaction.getCategory());
+        atualTransaction.setDescription(newTransaction.getDescription());
+        atualTransaction.setDate(newTransaction.getDate());
+        atualTransaction.setCreatedAt(newTransaction.getCreatedAt());
+
+        // Se quiser atualizar User e Group:
+        if (newTransaction.getUser() != null) {
+            atualTransaction.setUser(newTransaction.getUser());
+        }
+        if (newTransaction.getGroup() != null) {
+            atualTransaction.setGroup(newTransaction.getGroup());
+        }
+
+        return transactionRepository.save(atualTransaction);
     }
+
+//    public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
+//        return transactionRepository.findById(id)
+//                .map(transaction -> {
+//                    transaction.setAmount(updatedTransaction.getAmount());
+//                    transaction.setType(updatedTransaction.getType());
+//                    transaction.setCategory(updatedTransaction.getCategory());
+//                    transaction.setDescription(updatedTransaction.getDescription());
+//                    transaction.setDate(updatedTransaction.getDate());
+//
+//                    Transaction saved = transactionRepository.save(transaction);
+//                    return transactionRepository.save(transaction);
+//                })
+//                .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
+//    }
 
     public List<Transaction> getByUserId(Long userId) {
         return transactionRepository.findAllByUserId(userId);

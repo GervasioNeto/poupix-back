@@ -22,7 +22,6 @@ public class Group {
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-
     private List<User> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
