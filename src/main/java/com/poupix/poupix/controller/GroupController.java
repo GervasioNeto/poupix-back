@@ -7,6 +7,8 @@ import com.poupix.poupix.entity.Group;
 import com.poupix.poupix.service.GroupService;
 import com.poupix.poupix.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,5 +63,11 @@ public class GroupController {
     public GroupDTO updateGroup(@PathVariable Long groupId, @RequestBody Group group) {
         Group updatedGroup = groupService.updateGroup(groupId, group);
         return groupService.toDTO(updatedGroup);
+    }
+
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Void> deleteGroup(@PathVariable Long groupId) {
+        groupService.deleteGroup(groupId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

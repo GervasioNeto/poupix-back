@@ -134,4 +134,8 @@ public class GroupService {
 
         return groupRepository.save(existingGroup);
     }
+
+    public void deleteGroup(Long id) {
+        groupRepository.deleteById(id);
+    }
 }
