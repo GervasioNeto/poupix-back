@@ -1,5 +1,6 @@
 package com.poupix.poupix.controller;
 
+import com.poupix.poupix.dto.GroupDTO;
 import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.User;
@@ -30,6 +31,12 @@ public class UserController {
     public ResponseEntity<List<TransactionDTO>> getUserTransactions(@PathVariable Long userId) {
         List<TransactionDTO> transactions = transactionService.getUserTransactions(userId);
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/{userId}/groups")
+    public ResponseEntity<List<GroupDTO>> getUserGroups(@PathVariable Long userId) {
+        List<GroupDTO> groups = userService.getUserGroups(userId);
+        return ResponseEntity.ok(groups);
     }
 
     @PostMapping

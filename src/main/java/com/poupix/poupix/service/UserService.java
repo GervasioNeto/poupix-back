@@ -3,6 +3,7 @@ package com.poupix.poupix.service;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.dto.GroupDTO;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private GroupRepository groupRepository;
+
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
@@ -29,6 +33,15 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
+
+    public List<GroupDTO> getUserGroups(Long userId) {
+        // supondo que você tenha um relacionamento User -> Groups
+        return groupRepository.findByUsersId(userId)
+                .stream()
+                .map(GroupDTO::fromEntity)
+                .toList();
+    }
+
 
     public void deleteUser(Long id){
         userRepository.deleteById(id);

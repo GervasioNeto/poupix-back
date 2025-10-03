@@ -1,5 +1,7 @@
 package com.poupix.poupix.dto;
 
+import com.poupix.poupix.entity.Group;
+
 import java.util.List;
 
 public class GroupDTO {
@@ -16,6 +18,14 @@ public class GroupDTO {
         this.name = name;
         this.users = users;
         this.description = description;
+    }
+
+    public static GroupDTO fromEntity(Group group) {
+        List<UserDTO> users = group.getUsers().stream()
+                .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
+                .toList();
+
+        return new GroupDTO(group.getId(), group.getName(), users, group.getDescription());
     }
 
     // Getters e Setters
