@@ -38,6 +38,13 @@ public class TransactionService {
         return transactionRepository.findById(id);
     }
 
+    public List<TransactionDTO> getUserTransactions(Long userId) {
+        return transactionRepository.findByUserId(userId)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public Transaction saveTransaction(Long userId, Long groupId, Transaction transaction) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -50,22 +57,6 @@ public class TransactionService {
 
         return transactionRepository.save(transaction);
     }
-
-//    public Transaction createTransaction(Long groupId, Long userId, TransactionDTO dto) {
-//        Group group = groupRepository.findById(groupId)
-//                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-//
-//        Transaction transaction = new Transaction();
-//        transaction.setDescription(dto.getDescription());
-//        transaction.setAmount(dto.getAmount());
-//        transaction.setGroup(group);
-//        transaction.setUser(user);
-//
-//        return transactionRepository.save(transaction);
-//    }
 
     public Transaction createTransaction(TransactionDTO dto, Long groupId) {
         User user = userRepository.findById(dto.getUserId())

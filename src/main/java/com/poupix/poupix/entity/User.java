@@ -23,8 +23,8 @@ public class User {
 
     private LocalDateTime createdAt;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Transaction> transactions = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Transaction> transactions = new ArrayList<>();
 
     @ManyToMany(mappedBy = "users")
     private List<Group> groups = new ArrayList<>();
@@ -32,13 +32,12 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String email, String password, LocalDateTime createdAt, List<Transaction> transactions, List<Group> groups) {
+    public User(Long id, String name, String email, String password, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
-        this.groups = groups;
     }
 
     // Getters e Setters
@@ -64,5 +63,13 @@ public class User {
 
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

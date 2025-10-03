@@ -29,12 +29,11 @@ public class Group {
 
     public Group() {}
 
-    public Group(Long id, String name, String description, List<User> users, List<Transaction> transactions) {
+    public Group(Long id, String name, String description, List<User> users) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.users = users;
-        this.transactions = transactions;
     }
 
     public Long getId() {

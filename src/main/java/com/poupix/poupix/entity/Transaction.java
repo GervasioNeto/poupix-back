@@ -38,6 +38,21 @@ public class Transaction {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Transaction() {
+    }
+
+    public Transaction(Long id, Double amount, String type, String category, String description, LocalDate date, LocalDateTime createdAt, User user, Group group) {
+        this.id = id;
+        this.amount = amount;
+        this.type = type;
+        this.category = category;
+        this.description = description;
+        this.date = date;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.group = group;
+    }
+
     // Getters e setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
