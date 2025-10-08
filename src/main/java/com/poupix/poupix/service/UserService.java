@@ -67,7 +67,13 @@ public class UserService {
     //Mapper
     public UserDTO toDTO(User user) {
         List<GroupDTO> groups = user.getGroups().stream()
-                .map(group -> new GroupDTO(group.getId(), group.getName(), null, group.getDescription()))
+                .map(group -> new GroupDTO(
+                        group.getId(),
+                        group.getUuid(), // UUID agora
+                        group.getName(),
+                        null,            // lista de usuários pode ser null se não quiser carregar
+                        group.getDescription()
+                ))
                 .toList();
 
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), groups);
