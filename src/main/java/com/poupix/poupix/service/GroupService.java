@@ -15,53 +15,6 @@ import java.util.List;
 
 @Service
 public class GroupService {
-//    @Autowired
-//    private GroupRepository groupRepository;
-//    @Autowired
-//    private UserRepository userRepository;
-//    @Autowired
-//    private TransactionService transactionService;
-//
-//    public Group createGroup(Group group) {
-//        return groupRepository.save(group);
-//    }
-//
-//    public List<Group> getAllGroups() {
-//        return groupRepository.findAll();
-//    }
-//
-//    public Group addUserToGroup(Long groupId, Long userId) {
-//        Group group = groupRepository.findById(groupId)
-//                .orElseThrow(() -> new RuntimeException("Group not found"));
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        group.getUsers().add(user);
-//        return groupRepository.save(group);
-//    }
-//
-//    // Mapper: Group -> GroupDTO
-//    public GroupDTO toDTO(Group group) {
-//        // mapeia os usuários do grupo para UserDTO (sem senha, sem transações)
-//        List<UserDTO> users = group.getUsers().stream()
-//                .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail(), null))
-//                .toList();
-//
-//        return new GroupDTO(group.getId(), group.getName(), users, group.getDescription());
-//    }
-//
-//    public Group getGroupById(Long groupId) {
-//        return groupRepository.findById(groupId)
-//                .orElseThrow(() -> new RuntimeException("Group not found"));
-//    }
-//
-//    // Lista os usuários de um grupo
-//    public List<User> getGroupUsers(Long groupId) {
-//        Group group = getGroupById(groupId);
-//        return new ArrayList<User>(group.getUsers()); // supondo que Group tenha getUsers()
-//    }
-
-
     @Autowired
     private GroupRepository groupRepository;
 
@@ -94,7 +47,13 @@ public class GroupService {
                 .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
                 .toList();
 
-        return new GroupDTO(group.getId(), group.getName(), users, group.getDescription());
+        return new GroupDTO(
+                group.getId(),
+                group.getUuid(),
+                group.getName(),
+                users,
+                group.getDescription()
+        );
     }
 
     public Group createGroup(Group group, Long creatorUserId) {

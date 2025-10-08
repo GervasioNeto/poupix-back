@@ -7,14 +7,16 @@ import java.util.List;
 public class GroupDTO {
 
     private Long id;
+    private String uuid;
     private String name;
     private List<UserDTO> users;
     private String description;
 
     public GroupDTO() {}
 
-    public GroupDTO(Long id, String name, List<UserDTO> users, String description) {
+    public GroupDTO(Long id, String uuid, String name, List<UserDTO> users, String description) {
         this.id = id;
+        this.uuid = uuid;
         this.name = name;
         this.users = users;
         this.description = description;
@@ -25,7 +27,13 @@ public class GroupDTO {
                 .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
                 .toList();
 
-        return new GroupDTO(group.getId(), group.getName(), users, group.getDescription());
+        return new GroupDTO(
+                group.getId(),
+                group.getUuid(), // mapeando o UUID
+                group.getName(),
+                users,
+                group.getDescription()
+        );
     }
 
     // Getters e Setters
@@ -49,5 +57,13 @@ public class GroupDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }
