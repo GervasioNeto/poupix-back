@@ -52,7 +52,11 @@ public class UserService {
                 .map(user -> {
                     user.setName(updatedUser.getName());
                     user.setEmail(updatedUser.getEmail());
-                    user.setPassword(updatedUser.getPassword());
+
+                    // Atualiza senha SOMENTE se vier algo no body
+                    if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                        user.setPassword(updatedUser.getPassword());
+                    }
 
                     User savedUser = userRepository.save(user);
                     return toDTO(savedUser);
