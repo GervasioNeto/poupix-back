@@ -4,6 +4,8 @@ import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Group;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.observers.TransactionObserver;
+import com.poupix.poupix.observers.ConsoleTransactionObserver;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.TransactionRepository;
 import com.poupix.poupix.repository.UserRepository;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +29,15 @@ public class TransactionService {
     @Autowired
     private GroupRepository groupRepository;
 
+    private final List<TransactionObserver> observers = new ArrayList<>();
+
 //    public TransactionService(TransactionRepository transactionRepository) {
 //        this.transactionRepository = transactionRepository;
 //    }
+
+    public TransactionService() {
+        observers.add(new ConsoleTransactionObserver());
+    }
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
@@ -74,7 +83,13 @@ public class TransactionService {
         transaction.setUser(user);
         transaction.setGroup(group);
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        for (TransactionObserver observer : observers) {
+            observer.onTransactionCreated(savedTransaction);
+        }
+
+        return savedTransaction;
     }
 
     public Transaction createTransaction(Long groupId, TransactionDTO dto) {
