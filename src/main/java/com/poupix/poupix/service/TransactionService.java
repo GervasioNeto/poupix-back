@@ -105,6 +105,13 @@ public class TransactionService {
     }
 
     public void deleteTransaction(Long id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        for (TransactionObserver observer : observers) {
+            observer.onTransactionDeleted(transaction);
+        }
+
         transactionRepository.deleteById(id);
     }
 
