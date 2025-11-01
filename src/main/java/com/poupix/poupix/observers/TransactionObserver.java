@@ -6,4 +6,6 @@ public interface TransactionObserver {
     void onTransactionCreated(Transaction transaction);
 
     void onTransactionDeleted(Transaction transaction);
+
+//    void onTransactionUpdated(Transaction transaction);
 }
