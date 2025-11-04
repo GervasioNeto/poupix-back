@@ -12,7 +12,7 @@ public class ConsoleUserObserver implements UserObserver {
         System.out.println(
                 "[Observer] New User created: " +
                         "ID: " + user.getId() +
-                        " | Nome: " + userName +
+                        " | Name: " + userName +
                         " | Email: " + email +
                         "\n--------------------------------------------"
         );

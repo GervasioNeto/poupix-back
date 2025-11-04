@@ -5,6 +5,9 @@ import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.Group;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.observers.ConsoleGroupObserver;
+import com.poupix.poupix.observers.GroupObserver;
+import com.poupix.poupix.observers.TransactionObserver;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,12 @@ public class GroupService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final List<GroupObserver> observers = new ArrayList<>();
+
+    public GroupService() {
+        observers.add(new ConsoleGroupObserver());
+    }
 
     public Group getGroupById(Long groupId) {
         return groupRepository.findById(groupId)
@@ -57,19 +66,21 @@ public class GroupService {
     }
 
     public Group createGroup(Group group, Long creatorUserId) {
-        // Salva o grupo
         Group savedGroup = groupRepository.save(group);
 
-        // Busca o usuário criador
         User creator = userRepository.findById(creatorUserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Adiciona o usuário ao grupo
         savedGroup.getUsers().add(creator);
 
-        // Salva novamente o grupo com o usuário adicionado
+        for (GroupObserver observer : observers) {
+            observer.onGroupCreated(savedGroup);
+        }
+
         return groupRepository.save(savedGroup);
     }
+
+
 
     public List<Group> getAllGroups() {
         return groupRepository.findAll();
@@ -89,12 +100,18 @@ public class GroupService {
 
         existingGroup.setName(groupData.getName());
         existingGroup.setDescription(groupData.getDescription());
-        // atualize outros campos se necessário
 
         return groupRepository.save(existingGroup);
     }
 
     public void deleteGroup(Long id) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Group not found"));
+
+        for (GroupObserver observer : observers) {
+            observer.onGroupDeleted(group);
+        }
+
         groupRepository.deleteById(id);
     }
 }

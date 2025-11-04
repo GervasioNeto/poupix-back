@@ -30,20 +30,5 @@ public class ConsoleTransactionObserver implements TransactionObserver {
                         "\n--------------------------------------------"
         );
     }
-
-//    @Override
-//    public void onTransactionUpdated(Transaction transaction) {
-//        String userName = transaction.getUser() != null ? transaction.getUser().getName() : "Desconhecido";
-//        String groupName = transaction.getGroup() != null ? transaction.getGroup().getName() : "Desconhecido";
-//
-//        System.out.println(
-//                "[Observer] ✏️ Transação atualizada! " +
-//                        "ID: " + transaction.getId() +
-//                        " | Usuário: " + userName +
-//                        " | Grupo: " + groupName +
-//                        " | Valor: R$ " + transaction.getAmount() +
-//                        " | Tipo: " + transaction.getType()
-//        );
-//    }
 }
 
