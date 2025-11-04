@@ -3,12 +3,16 @@ package com.poupix.poupix.service;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.dto.GroupDTO;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.observers.ConsoleTransactionObserver;
+import com.poupix.poupix.observers.ConsoleUserObserver;
+import com.poupix.poupix.observers.UserObserver;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,11 @@ public class UserService {
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
+    private final List<UserObserver> observers = new ArrayList<>();
+
+    public UserService() {
+        observers.add(new ConsoleUserObserver());
+    }
 
     public Optional<UserDTO> getUserById(Long id){
         return userRepository.findById(id).map(this::toDTO);
@@ -31,7 +40,14 @@ public class UserService {
 
     public User createUser(User user){
         user.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // Notifica todos os observers
+        for (UserObserver observer : observers) {
+            observer.onUserCreated(savedUser);
+        }
+
+        return savedUser;
     }
 
     public List<GroupDTO> getUserGroups(Long userId) {
