@@ -42,13 +42,13 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
         User savedUser = userService.createUser(user);
-        return ResponseEntity.ok(userService.toDTO(savedUser)); // retorna DTO sem senha
+        return ResponseEntity.ok(userService.toDTO(savedUser));
     }
 
     @GetMapping
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers().stream()
-                .map(userService::toDTO) // converte User -> UserDTO
+                .map(userService::toDTO)
                 .toList();
     }
 

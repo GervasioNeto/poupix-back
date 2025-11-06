@@ -10,10 +10,10 @@ public class ConsoleTransactionObserver implements TransactionObserver {
         String groupName = transaction.getGroup() != null ? transaction.getGroup().getName() : "Desconhecido";
 
         System.out.println(
-                "\n[Observer] New Transaction Created: " +
-                        "\nTransaction ID:" + transaction.getId() +
-                        "\nGroup: " + groupName +
-                        "\nCreated at: " + transaction.getCreatedAt() +
+                "[Observer] New Transaction Created: " +
+                        "ID:" + transaction.getId() +
+                        " | Group: " + groupName +
+                        " | Created at: " + transaction.getCreatedAt() +
                         "\n--------------------------------------------"
         );
     }
@@ -24,9 +24,9 @@ public class ConsoleTransactionObserver implements TransactionObserver {
         String groupName = transaction.getGroup() != null ? transaction.getGroup().getName() : "Desconhecido";
 
         System.out.println(
-                "\n[Observer] Transaction Deleted: " +
-                        "\nTransaction ID:" + transaction.getId() +
-                        "\nGroup: " + groupName +
+                "[Observer] Transaction Deleted: " +
+                        "ID:" + transaction.getId() +
+                        " | Group: " + groupName +
                         "\n--------------------------------------------"
         );
     }

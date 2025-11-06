@@ -7,6 +7,7 @@ import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.entity.User;
 import com.poupix.poupix.observers.ConsoleGroupObserver;
 import com.poupix.poupix.observers.GroupObserver;
+import com.poupix.poupix.observers.NotificationCenter;
 import com.poupix.poupix.observers.TransactionObserver;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
@@ -27,10 +28,9 @@ public class GroupService {
     @Autowired
     private UserRepository userRepository;
 
-    private final List<GroupObserver> observers = new ArrayList<>();
+    private final NotificationCenter notificationCenter = NotificationCenter.getInstance();
 
     public GroupService() {
-        observers.add(new ConsoleGroupObserver());
     }
 
     public Group getGroupById(Long groupId) {
@@ -38,20 +38,17 @@ public class GroupService {
                 .orElseThrow(() -> new RuntimeException("Group not found"));
     }
 
-    // Lista os usuários de um grupo
     public List<User> getGroupUsers(Long groupId) {
         Group group = getGroupById(groupId);
         return new ArrayList<>(group.getUsers()); // supondo que Group tenha getUsers()
     }
 
-    // Lista as transações de um grupo
     public List<Transaction> getGroupTransactions(Long groupId) {
         Group group = getGroupById(groupId);
         return new ArrayList<>(group.getTransactions()); // supondo que Group tenha getTransactions()
     }
 
     public GroupDTO toDTO(Group group) {
-        // mapeia os usuários do grupo para UserDTO (sem senha, sem transações)
         List<UserDTO> users = group.getUsers().stream()
                 .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
                 .toList();
@@ -73,14 +70,10 @@ public class GroupService {
 
         savedGroup.getUsers().add(creator);
 
-        for (GroupObserver observer : observers) {
-            observer.onGroupCreated(savedGroup);
-        }
+        notificationCenter.notifyGroupCreated(savedGroup);
 
         return groupRepository.save(savedGroup);
     }
-
-
 
     public List<Group> getAllGroups() {
         return groupRepository.findAll();
@@ -108,9 +101,7 @@ public class GroupService {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Group not found"));
 
-        for (GroupObserver observer : observers) {
-            observer.onGroupDeleted(group);
-        }
+        notificationCenter.notifyGroupDeleted(group);
 
         groupRepository.deleteById(id);
     }
