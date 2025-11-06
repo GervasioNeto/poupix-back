@@ -3,8 +3,7 @@ package com.poupix.poupix.service;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.dto.GroupDTO;
 import com.poupix.poupix.entity.User;
-import com.poupix.poupix.observers.ConsoleTransactionObserver;
-import com.poupix.poupix.observers.ConsoleUserObserver;
+import com.poupix.poupix.observers.NotificationCenter;
 import com.poupix.poupix.observers.UserObserver;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +26,10 @@ public class UserService {
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
-    private final List<UserObserver> observers = new ArrayList<>();
+
+    private final NotificationCenter notificationCenter = NotificationCenter.getInstance();
 
     public UserService() {
-        observers.add(new ConsoleUserObserver());
     }
 
     public Optional<UserDTO> getUserById(Long id){
@@ -42,16 +40,12 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
         User savedUser = userRepository.save(user);
 
-        // Notifica todos os observers
-        for (UserObserver observer : observers) {
-            observer.onUserCreated(savedUser);
-        }
+        notificationCenter.notifyUserCreated(savedUser);
 
         return savedUser;
     }
 
     public List<GroupDTO> getUserGroups(Long userId) {
-        // supondo que você tenha um relacionamento User -> Groups
         return groupRepository.findByUsersId(userId)
                 .stream()
                 .map(GroupDTO::fromEntity)
@@ -87,7 +81,7 @@ public class UserService {
                         group.getId(),
                         group.getUuid(), // UUID agora
                         group.getName(),
-                        null,            // lista de usuários pode ser null se não quiser carregar
+                        null,
                         group.getDescription()
                 ))
                 .toList();

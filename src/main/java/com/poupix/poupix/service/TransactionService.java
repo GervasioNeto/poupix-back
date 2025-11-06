@@ -4,6 +4,8 @@ import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.entity.Group;
 import com.poupix.poupix.entity.Transaction;
 import com.poupix.poupix.entity.User;
+import com.poupix.poupix.factory.TransactionFactory;
+import com.poupix.poupix.observers.NotificationCenter;
 import com.poupix.poupix.observers.TransactionObserver;
 import com.poupix.poupix.observers.ConsoleTransactionObserver;
 import com.poupix.poupix.repository.GroupRepository;
@@ -29,14 +31,13 @@ public class TransactionService {
     @Autowired
     private GroupRepository groupRepository;
 
-    private final List<TransactionObserver> observers = new ArrayList<>();
+    private final NotificationCenter notificationCenter = NotificationCenter.getInstance();
 
 //    public TransactionService(TransactionRepository transactionRepository) {
 //        this.transactionRepository = transactionRepository;
 //    }
 
     public TransactionService() {
-        observers.add(new ConsoleTransactionObserver());
     }
 
     public List<Transaction> getAllTransactions() {
@@ -74,43 +75,32 @@ public class TransactionService {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
 
-        Transaction transaction = new Transaction();
-        transaction.setAmount(dto.getAmount());
-        transaction.setType(dto.getType());
-        transaction.setCategory(dto.getCategory());
-        transaction.setDescription(dto.getDescription());
-        transaction.setDate(dto.getDate());
-        transaction.setUser(user);
-        transaction.setGroup(group);
+        Transaction transaction = TransactionFactory.create(dto, user, group);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
-        for (TransactionObserver observer : observers) {
-            observer.onTransactionCreated(savedTransaction);
-        }
+        notificationCenter.notifyTransactionCreated(savedTransaction);
 
         return savedTransaction;
     }
 
-    public Transaction createTransaction(Long groupId, TransactionDTO dto) {
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
-
-        Transaction transaction = new Transaction();
-        transaction.setDescription(dto.getDescription());
-        transaction.setAmount(dto.getAmount());
-        transaction.setGroup(group);
-
-        return transactionRepository.save(transaction);
-    }
+//    public Transaction createTransaction(Long groupId, TransactionDTO dto) {
+//        Group group = groupRepository.findById(groupId)
+//                .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
+//
+//        Transaction transaction = new Transaction();
+//        transaction.setDescription(dto.getDescription());
+//        transaction.setAmount(dto.getAmount());
+//        transaction.setGroup(group);
+//
+//        return transactionRepository.save(transaction);
+//    }
 
     public void deleteTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
-        for (TransactionObserver observer : observers) {
-            observer.onTransactionDeleted(transaction);
-        }
+        notificationCenter.notifyTransactionDeleted(transaction);
 
         transactionRepository.deleteById(id);
     }
@@ -158,21 +148,6 @@ public class TransactionService {
 
         return transactionRepository.save(atualTransaction);
     }
-
-//    public Transaction updateTransaction(Long id, Transaction updatedTransaction) {
-//        return transactionRepository.findById(id)
-//                .map(transaction -> {
-//                    transaction.setAmount(updatedTransaction.getAmount());
-//                    transaction.setType(updatedTransaction.getType());
-//                    transaction.setCategory(updatedTransaction.getCategory());
-//                    transaction.setDescription(updatedTransaction.getDescription());
-//                    transaction.setDate(updatedTransaction.getDate());
-//
-//                    Transaction saved = transactionRepository.save(transaction);
-//                    return transactionRepository.save(transaction);
-//                })
-//                .orElseThrow(() -> new RuntimeException("Transaction não encontrada"));
-//    }
 
     public List<Transaction> getByUserId(Long userId) {
         return transactionRepository.findAllByUserId(userId);
