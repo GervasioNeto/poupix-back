@@ -50,7 +50,12 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.toDTO(transaction));
     }
 
-    // Lista usuários de um grupo
+    @PostMapping("/{groupId}/users/email")
+    public ResponseEntity<GroupDTO> addUserToGroupByEmail(@PathVariable Long groupId, @RequestBody UserDTO userDTO) {
+        Group updatedGroup = groupService.addUserToGroupByEmail(groupId, userDTO.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(groupService.toDTO(updatedGroup));
+    }
+
     @GetMapping("/{groupId}/users")
     public List<UserDTO> getGroupUsers(@PathVariable Long groupId) {
         return groupService.getGroupUsers(groupId)
@@ -85,5 +90,11 @@ public class GroupController {
     public ResponseEntity<Void> deleteGroup(@PathVariable Long groupId) {
         groupService.deleteGroup(groupId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{groupId}/users/{userId}")
+    public ResponseEntity<GroupDTO> removeUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId) {
+        Group updatedGroup = groupService.removeUserFromGroup(groupId, userId);
+        return ResponseEntity.ok(groupService.toDTO(updatedGroup));
     }
 }
