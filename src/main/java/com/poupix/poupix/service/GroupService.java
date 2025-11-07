@@ -87,6 +87,18 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
+    public Group addUserToGroupByEmail(Long groupId, String email) {
+        Group group = getGroupById(groupId);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (group.getUsers().contains(user)) {
+            throw new RuntimeException("Usuário já está no grupo");
+        }
+
+        return addUserToGroup(groupId, user.getId());
+    }
+
     public Group updateGroup(Long groupId, Group groupData) {
         Group existingGroup = groupRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Grupo não encontrado"));
@@ -95,6 +107,21 @@ public class GroupService {
         existingGroup.setDescription(groupData.getDescription());
 
         return groupRepository.save(existingGroup);
+    }
+
+    public Group removeUserFromGroup(Long groupId, Long userId) {
+        Group group = getGroupById(groupId);
+
+        if (group.getUsers().size() <= 1) {
+            throw new RuntimeException("Não é possível remover o último integrante do grupo. Exclua o grupo inteiro.");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        group.getUsers().remove(user);
+
+        return groupRepository.save(group);
     }
 
     public void deleteGroup(Long id) {
