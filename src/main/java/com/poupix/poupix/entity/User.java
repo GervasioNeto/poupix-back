@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -26,8 +25,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "users")
-    private List<Group> groups = new ArrayList<>();
+//    @ManyToMany(mappedBy = "users")
+//    private List<Group> groups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GroupMember> groups = new ArrayList<>();
 
     public User() {
     }
@@ -57,11 +59,20 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
 
-    public List<Group> getGroups() {
+//    public List<Group> getGroups() {
+//        return groups;
+//    }
+//
+//    public void setGroups(List<Group> groups) {
+//        this.groups = groups;
+//    }
+
+
+    public List<GroupMember> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(List<GroupMember> groups) {
         this.groups = groups;
     }
 
