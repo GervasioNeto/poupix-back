@@ -1,6 +1,7 @@
 package com.poupix.poupix.controller;
 
 import com.poupix.poupix.dto.GroupDTO;
+import com.poupix.poupix.dto.GroupMemberDTO;
 import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.Group;
@@ -64,6 +65,18 @@ public class GroupController {
                 .toList();
     }
 
+    @GetMapping("/{groupId}/members")
+    public List<GroupMemberDTO> getGroupMembers(@PathVariable Long groupId) {
+        return groupService.getGroupMembers(groupId).stream()
+                .map(m -> new GroupMemberDTO(
+                        m.getUser().getId(),
+                        m.getUser().getName(),
+                        m.getUser().getEmail(),
+                        m.getRole().name()
+                ))
+                .toList();
+    }
+
     @GetMapping
     public List<GroupDTO> getAllGroups() {
         return groupService.getAllGroups().stream()
@@ -96,5 +109,20 @@ public class GroupController {
     public ResponseEntity<GroupDTO> removeUserFromGroup(@PathVariable Long groupId, @PathVariable Long userId) {
         Group updatedGroup = groupService.removeUserFromGroup(groupId, userId);
         return ResponseEntity.ok(groupService.toDTO(updatedGroup));
+    }
+
+    @PostMapping("/{groupId}/users/{userId}/promote")
+    public ResponseEntity<GroupDTO> promoteUser(@PathVariable Long groupId, @PathVariable Long userId) {
+        groupService.promoteUser(groupId, userId);
+        Group updatedGroup = groupService.getGroupById(groupId);
+        return ResponseEntity.ok(groupService.toDTO(updatedGroup));
+    }
+
+    @GetMapping("/busca")
+    public List<GroupDTO> searchGroups(@RequestParam("q") String query) {
+        return groupService.searchGroups(query)
+                .stream()
+                .map(groupService::toDTO)
+                .toList();
     }
 }

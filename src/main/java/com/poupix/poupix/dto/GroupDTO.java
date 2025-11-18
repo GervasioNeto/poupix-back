@@ -9,29 +9,36 @@ public class GroupDTO {
     private Long id;
     private String uuid;
     private String name;
-    private List<UserDTO> users;
+    private List<GroupMemberDTO> members;
     private String description;
+
 
     public GroupDTO() {}
 
-    public GroupDTO(Long id, String uuid, String name, List<UserDTO> users, String description) {
+    public GroupDTO(Long id, String uuid, String name, List<GroupMemberDTO> members, String description) {
         this.id = id;
         this.uuid = uuid;
         this.name = name;
-        this.users = users;
+        this.members = members;
         this.description = description;
     }
 
     public static GroupDTO fromEntity(Group group) {
-        List<UserDTO> users = group.getUsers().stream()
-                .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail()))
+
+        List<GroupMemberDTO> members = group.getGroupMembers().stream()
+                .map(gm -> new GroupMemberDTO(
+                        gm.getUser().getId(),
+                        gm.getUser().getName(),
+                        gm.getUser().getEmail(),
+                        gm.getRole().name()
+                ))
                 .toList();
 
         return new GroupDTO(
                 group.getId(),
-                group.getUuid(), // mapeando o UUID
+                group.getUuid(),
                 group.getName(),
-                users,
+                members,
                 group.getDescription()
         );
     }
@@ -43,13 +50,6 @@ public class GroupDTO {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public List<UserDTO> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<UserDTO> users) {
-        this.users = users;
-    }
 
     public String getDescription() {
         return description;
@@ -65,5 +65,13 @@ public class GroupDTO {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public List<GroupMemberDTO> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<GroupMemberDTO> members) {
+        this.members = members;
     }
 }

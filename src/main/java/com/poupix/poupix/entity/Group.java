@@ -1,6 +1,5 @@
 package com.poupix.poupix.entity;
 
-import com.poupix.poupix.dto.UserDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -20,13 +19,16 @@ public class Group {
     @Column(unique = true, updatable = false, nullable = false)
     private String uuid = UUID.randomUUID().toString();
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_group",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users = new ArrayList<>();
+//    @ManyToMany
+//        @JoinTable(
+//                name = "user_group",
+//                joinColumns = @JoinColumn(name = "group_id"),
+//                inverseJoinColumns = @JoinColumn(name = "user_id")
+//        )
+//        private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GroupMember> groupMembers = new ArrayList<>();
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
@@ -37,7 +39,7 @@ public class Group {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.users = users;
+//        this.users = users;
         this.uuid = uuid;
     }
 
@@ -57,13 +59,13 @@ public class Group {
         this.name = name;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
 
     public List<Transaction> getTransactions() {
         return transactions;
@@ -87,5 +89,13 @@ public class Group {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public List<GroupMember> getGroupMembers() {
+        return groupMembers;
+    }
+
+    public void setGroupMembers(List<GroupMember> groupMembers) {
+        this.groupMembers = groupMembers;
     }
 }

@@ -2,9 +2,11 @@ package com.poupix.poupix.service;
 
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.dto.GroupDTO;
+import com.poupix.poupix.entity.GroupMember;
 import com.poupix.poupix.entity.User;
 import com.poupix.poupix.observers.NotificationCenter;
 import com.poupix.poupix.observers.UserObserver;
+import com.poupix.poupix.repository.GroupMemberRepository;
 import com.poupix.poupix.repository.GroupRepository;
 import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class UserService {
 
     @Autowired
     private GroupRepository groupRepository;
+
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -45,8 +50,16 @@ public class UserService {
         return savedUser;
     }
 
+//    public List<GroupDTO> getUserGroups(Long userId) {
+//        List<GroupMember> memberships = groupMemberRepository.findByUser_Id(userId);
+//
+//        return memberships.stream()
+//                .map(m -> GroupDTO.fromEntity(m.getGroup()))
+//                .toList();
+//    }
+
     public List<GroupDTO> getUserGroups(Long userId) {
-        return groupRepository.findByUsersId(userId)
+        return groupRepository.findByGroupMembersUserId(userId)
                 .stream()
                 .map(GroupDTO::fromEntity)
                 .toList();
@@ -77,15 +90,20 @@ public class UserService {
     //Mapper
     public UserDTO toDTO(User user) {
         List<GroupDTO> groups = user.getGroups().stream()
-                .map(group -> new GroupDTO(
-                        group.getId(),
-                        group.getUuid(), // UUID agora
-                        group.getName(),
-                        null,
-                        group.getDescription()
-                ))
+                .map(groupUser -> {
+                    var group = groupUser.getGroup(); // acessa a entidade Group
+
+                    return new GroupDTO(
+                            group.getId(),
+                            group.getUuid(),
+                            group.getName(),
+                            null,
+                            group.getDescription()
+                    );
+                })
                 .toList();
 
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), groups);
     }
+
 }
