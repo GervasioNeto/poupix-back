@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findByGroupMembersUserId(Long userId);
+    Group findByUuid(String uuid);
+    List<Group> findByNameContainingIgnoreCase(String name);
 }

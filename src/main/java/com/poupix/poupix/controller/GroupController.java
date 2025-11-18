@@ -117,4 +117,12 @@ public class GroupController {
         Group updatedGroup = groupService.getGroupById(groupId);
         return ResponseEntity.ok(groupService.toDTO(updatedGroup));
     }
+
+    @GetMapping("/busca")
+    public List<GroupDTO> searchGroups(@RequestParam("q") String query) {
+        return groupService.searchGroups(query)
+                .stream()
+                .map(groupService::toDTO)
+                .toList();
+    }
 }

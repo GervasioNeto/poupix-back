@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GroupService {
@@ -230,5 +231,26 @@ public class GroupService {
 
         gu.setRole(GroupRole.MEMBER);
         groupUserRepository.save(gu);
+    }
+
+    public List<Group> searchGroups(String query) {
+        // Verifica se é UUID válido
+        if (isUUID(query)) {
+            Group group = groupRepository.findByUuid(query);
+            if (group != null) return List.of(group);
+            return List.of(); // UUID válido, mas não encontrado
+        }
+
+        // Caso contrário, busca por nome
+        return groupRepository.findByNameContainingIgnoreCase(query);
+    }
+
+    private boolean isUUID(String value) {
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
