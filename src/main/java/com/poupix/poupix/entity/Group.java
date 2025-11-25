@@ -1,7 +1,9 @@
 package com.poupix.poupix.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,13 +21,9 @@ public class Group {
     @Column(unique = true, updatable = false, nullable = false)
     private String uuid = UUID.randomUUID().toString();
 
-//    @ManyToMany
-//        @JoinTable(
-//                name = "user_group",
-//                joinColumns = @JoinColumn(name = "group_id"),
-//                inverseJoinColumns = @JoinColumn(name = "user_id")
-//        )
-//        private List<User> users = new ArrayList<>();
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupMember> groupMembers = new ArrayList<>();
@@ -59,14 +57,6 @@ public class Group {
         this.name = name;
     }
 
-//    public List<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<User> users) {
-//        this.users = users;
-//    }
-
     public List<Transaction> getTransactions() {
         return transactions;
     }
@@ -97,5 +87,13 @@ public class Group {
 
     public void setGroupMembers(List<GroupMember> groupMembers) {
         this.groupMembers = groupMembers;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

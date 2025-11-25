@@ -14,6 +14,7 @@ import com.poupix.poupix.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -252,5 +253,9 @@ public class GroupService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public List<Group> searchByDateRange(LocalDateTime start, LocalDateTime end) {
+        return groupRepository.findByCreatedAtBetween(start, end);
     }
 }

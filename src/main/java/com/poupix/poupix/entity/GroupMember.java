@@ -1,5 +1,6 @@
 package com.poupix.poupix.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poupix.poupix.enums.GroupRole;
 import jakarta.persistence.*;
 
@@ -13,6 +14,7 @@ public class GroupMember {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonIgnore
     private Group group;
 
     @ManyToOne
