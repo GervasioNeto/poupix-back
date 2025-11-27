@@ -21,13 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
     @Autowired
     private TransactionService transactionService;
-
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("{userId}/transactions")
     public ResponseEntity<List<TransactionDTO>> getUserTransactions(@PathVariable Long userId) {
@@ -55,19 +51,19 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    private UserDTO updateUser(@PathVariable Long id, @RequestBody User user){
+    public UserDTO updateUser(@PathVariable Long id, @RequestBody User user){
         return  userService.updateUser(id, user);
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return userService.getUserById(id)
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity<Void> deleteUser(@PathVariable Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

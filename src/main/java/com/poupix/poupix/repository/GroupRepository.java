@@ -13,5 +13,9 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findByGroupMembersUserId(Long userId);
     Group findByUuid(String uuid);
     List<Group> findByNameContainingIgnoreCase(String name);
-    List<Group> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Group> findByCreatedAtBetweenAndGroupMembers_User_Id(
+            LocalDateTime start,
+            LocalDateTime end,
+            Long userId
+    );
 }

@@ -34,8 +34,6 @@ public class UserService {
 
     private final NotificationCenter notificationCenter = NotificationCenter.getInstance();
 
-    public UserService() {
-    }
 
     public Optional<UserDTO> getUserById(Long id){
         return userRepository.findById(id).map(this::toDTO);
