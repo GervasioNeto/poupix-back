@@ -2,6 +2,8 @@ package com.poupix.poupix.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,10 +17,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // PK auto-increment
     private Long id;
 
+    @NotBlank(message = "O nome é obrigatório")
     private String name;
 
+    @Email(message = "E-mail inválido")
+    @NotBlank(message = "O e-mail é obrigatório")
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "A senha é obrigatória")
     private String password;
 
     private LocalDateTime createdAt;

@@ -255,7 +255,7 @@ public class GroupService {
         }
     }
 
-    public List<Group> searchByDateRange(LocalDateTime start, LocalDateTime end) {
-        return groupRepository.findByCreatedAtBetween(start, end);
+    public List<Group> searchByDateRange(LocalDateTime start, LocalDateTime end, Long userId) {
+        return groupRepository.findByCreatedAtBetweenAndGroupMembers_User_Id(start, end, userId);
     }
 }

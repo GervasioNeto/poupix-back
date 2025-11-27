@@ -128,7 +128,11 @@ public class GroupController {
     }
 
     @GetMapping("/search/date")
-    public List<Group> searchByDate(@RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
-        return groupService.searchByDateRange(start, end);
+    public List<Group> searchByDate(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end,
+            @RequestParam Long userId
+    ) {
+        return groupService.searchByDateRange(start, end, userId);
     }
 }
