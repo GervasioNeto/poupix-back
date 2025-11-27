@@ -1,11 +1,13 @@
 package com.poupix.poupix.controller;
 
 import com.poupix.poupix.dto.GroupDTO;
+import com.poupix.poupix.dto.LoginRequest;
 import com.poupix.poupix.dto.TransactionDTO;
 import com.poupix.poupix.dto.UserDTO;
 import com.poupix.poupix.entity.User;
 import com.poupix.poupix.service.TransactionService;
 import com.poupix.poupix.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody User user) {
         User savedUser = userService.createUser(user);
         return ResponseEntity.ok(userService.toDTO(savedUser));
     }
@@ -68,5 +70,17 @@ public class UserController {
     private ResponseEntity<Void> deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        return userService.findByEmail(loginRequest.getEmail())
+                .map(user -> {
+                    if (!user.getPassword().equals(loginRequest.getPassword())) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta");
+                    }
+                    return ResponseEntity.ok(userService.toDTO(user));
+                })
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email não encontrado"));
     }
 }

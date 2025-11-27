@@ -106,4 +106,21 @@ public class UserService {
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), groups);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User authenticate(String email, String password) {
+        // 1. Buscar usuário pelo e-mail
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // 2. Validar senha (sem criptografia, como está hoje)
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Senha incorreta");
+        }
+
+        // 3. Retornar o usuário válido
+        return user;
+    }
 }
