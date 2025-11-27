@@ -20,7 +20,7 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
