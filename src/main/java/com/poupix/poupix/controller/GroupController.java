@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -124,5 +125,10 @@ public class GroupController {
                 .stream()
                 .map(groupService::toDTO)
                 .toList();
+    }
+
+    @GetMapping("/search/date")
+    public List<Group> searchByDate(@RequestParam LocalDateTime start, @RequestParam LocalDateTime end) {
+        return groupService.searchByDateRange(start, end);
     }
 }
